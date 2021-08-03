@@ -4,23 +4,25 @@
 clear  % Clears the workspace
 % close all % Closes the figures
 
-%imfile='images/autumn.tif';
-imfile='matlab/images/dgb.jpg';
+% imfile='images/autumn.tif';
+% imfile='matlab/images/dgb.jpg';
+imfile='matlab/images/spine.tif';
 I=imread(imfile); % Read in image
 
 % Read what type of image it is:
 info=imfinfo(imfile);
 
 % Process image according to its type
-if strcmp(info.ColorType,'indexed') + strcmp(info.ColorType,'grayscale'),
-    disp('Case 1. '),disp(info.ColorType)
-    disp('Here you can process the image, if it is a Indexed or Grayscale image')
+if strcmp(info.ColorType,'indexed') + strcmp(info.ColorType,'grayscale')
+    disp('Case 1. ');
+    disp(info.ColorType);
+    disp('Here you can process the image, if it is a Indexed or Grayscale image');
 
 % Convert image to double precision, in order to process: 
-    Vbf=double(I); % Vbf is before processing
+    Vbf = double(I); % Vbf is before processing
 %   Do some processing of the intensity:
-    V = max(Vbf(:))-Vbf; % Here the intensity is just inverted
-    Iout=uint8(V); % Convert image back to integer, uint8 format
+    V = max(Vbf(:)) - Vbf; % Here the intensity is just inverted
+    Iout = uint8(V); % Convert image back to integer, uint8 format
 
 else
     disp('Case 2 '),disp(info.ColorType)
@@ -38,13 +40,13 @@ else
     % processing.
 
     % Some intensity transformations: ------------------------------
-     V=1-Vbf; % Here the intensity is just inverted, as example on a modification.  
+     V = 1 - Vbf; % Here the intensity is just inverted, as example on a modification.  
     % V=histeq(Vbf); % Here the histogram is equalised
     % V=ones(size(Vbf))*0.5; % This sets all intensities to the same level
     
     % Put back the intensity plane into the image. Later you want to modify
     % the intensity for image enhancement before putting it back:
-     Ihsv(:,:,3)=V;
+     Ihsv(:,:,3) = V;
     
     % Other manipulations: ----------------------------------------
     
@@ -57,7 +59,7 @@ else
    %  Ihsv(:,:,2)=I(:,:,3);
    %  Ihsv(:,:,1)=0.3;
     
-    Iout=hsv2rgb(Ihsv); % Convert image back to RGB form
+    Iout = hsv2rgb(Ihsv); % Convert image back to RGB form
     
     % Another example: We may want to look at the levels of R, G and B
     % separately:
