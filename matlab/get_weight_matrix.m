@@ -19,8 +19,8 @@ function [W] = get_weight_matrix(Ti,ker_size)
     
     % obtaining W_x and W_y
     w_gauss = fspecial('gaussian', [ker_size, 1], 2);
-    disp('gaussian filter:');
-    disp(w_gauss);
+%     disp('gaussian filter:');
+%     disp(w_gauss);
     conv_x = conv(dtx, w_gauss, 'same');
     conv_y = conv(dty, w_gauss, 'same');
     W_x = 1 ./ (abs(conv_x) + 0.0001);

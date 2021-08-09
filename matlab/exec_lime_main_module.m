@@ -1,4 +1,4 @@
-function [Ti, Tout, enh_img, Iout] = exec_lime_main_module(orig_img, mu, rho, iter, flag)
+function [Ti, Tout, enh_img, Inr] = exec_lime_main_module(orig_img, mu, rho, iter, flag, level, th_type)
 % main module incluidng lime image enhancement, denoising and plotting of
 % results
 
@@ -7,15 +7,12 @@ function [Ti, Tout, enh_img, Iout] = exec_lime_main_module(orig_img, mu, rho, it
 % alpha, mu, rho are constant parameters for the solver
 % iter = no. of lime solver iterations
 
-% ds and ss are respective degree of smoothing and
-% spatial smoothing for bilateral filter (imbilatfilt)
-
 % flag kept 1 for displaying outputs
 
 % Ti is initial illumination map
 % Tout is refined Ti
 % enh_img is enhanced image
-% I_out is img_out after denoising
+% Inr is img_out after denoising (noise reduction = nr)
 
     alpha = 0.08; % same value for all images, original paper is using 0.15
     gamma = 0.8; % parameter for gamma correction
@@ -23,13 +20,17 @@ function [Ti, Tout, enh_img, Iout] = exec_lime_main_module(orig_img, mu, rho, it
     [Tout, Ti] = lime_enhance(orig_img, alpha, mu, rho, gamma, iter);
     enh_img = im2double(orig_img) ./ Tout;
     
-    % post processing:
-    %   imbilatfilt applies an edge-preserving Gaussian bilateral filter to the grayscale or RGB image
-    %   used instead of BM3D filter (block matching and 3D filtering) for denoising
-    ds = 10;
-    ss = 1.5;
-    Iout = imbilatfilt(enh_img, ds, ss);
-    
+    % post processing
+    % 1. discrete 2d-haar wavelet transform transforms image the to time/freqency domain
+    %    level decides the depth of the haar transform
+    % 2. high frequency wavelet coefficients are either reduced (soft
+    %    threasholding) or set to zero (hard threasholding)
+    %    th_type = "hard"/"soft"
+    % 3. discrete 2d-inverse haar transform transforms haar coefficients
+    %    back to the "ordinary" image
+
+    Inr = exec_full_haar_main_module(enh_img, level, th_type);
+
     if flag == 1
         subplot(1, 3, 1);
         imshow(orig_img);
@@ -40,8 +41,7 @@ function [Ti, Tout, enh_img, Iout] = exec_lime_main_module(orig_img, mu, rho, it
         title('Enhanced');
         
         subplot(1, 3, 3);
-        imshow(Iout);
+        imshow(cast(Inr, 'uint8')); % % cast to uint8 for plotting
         title('With reduced noise');
     end
-
 end
