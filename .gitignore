@@ -2,6 +2,7 @@
 /build/
 /package-lock.json
 /me/
+private
 node_modules
 vendor
 
