@@ -1,0 +1,16 @@
+==== 2021 status ====
+Verified on phones:
+  Sony G8141     (Android 9)
+  Google Pixel 5 (Android 11)
+  Sony C6833     (Android 5.1 API level 22)
+  Sony F5321,    (Android 8)
+
+Verified on emulators:
+  Pixel Api 27
+  Nexus 5 API 22
+
+Project Structure:
+  compileSdkVersion 30
+  minSdkVersion 22
+  targetSdkVersion 30
+

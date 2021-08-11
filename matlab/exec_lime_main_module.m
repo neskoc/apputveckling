@@ -1,4 +1,4 @@
-function [Ti, Tout, enh_img, Inr] = exec_lime_main_module(orig_img, mu, rho, iter, flag, level, th_type)
+function [Ti, Tout, enh_img, Inr] = exec_lime_main_module(orig_img, mu, rho, iter, level, th_type)
 % main module incluidng lime image enhancement, denoising and plotting of
 % results
 
@@ -6,8 +6,6 @@ function [Ti, Tout, enh_img, Inr] = exec_lime_main_module(orig_img, mu, rho, ite
 
 % alpha, mu, rho are constant parameters for the solver
 % iter = no. of lime solver iterations
-
-% flag kept 1 for displaying outputs
 
 % Ti is initial illumination map
 % Tout is refined Ti
@@ -31,17 +29,15 @@ function [Ti, Tout, enh_img, Inr] = exec_lime_main_module(orig_img, mu, rho, ite
 
     Inr = exec_full_haar_main_module(enh_img, level, th_type);
 
-    if flag == 1
-        subplot(1, 3, 1);
-        imshow(orig_img);
-        title('Original');
-        
-        subplot(1, 3, 2);
-        imshow(enh_img);
-        title('Enhanced');
-        
-        subplot(1, 3, 3);
-        imshow(cast(Inr, 'uint8')); % % cast to uint8 for plotting
-        title('With reduced noise');
-    end
+    subplot(1, 3, 1);
+    imshow(orig_img);
+    title('Original');
+    
+    subplot(1, 3, 2);
+    imshow(enh_img);
+    title('Enhanced');
+    
+    subplot(1, 3, 3);
+    imshow(cast(Inr, 'uint8')); % % cast to uint8 for plotting
+    title('With reduced noise');
 end

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Admin\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\18.0.0\support-v4-18.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="22.0.1"
+        sha1="44ec51e9d395a47aab135e5e1b556c0007442156">
+        <dex dex="C:\Users\Admin\StudioProjects\ImageEnhancerExample\app\build\intermediates\pre-dexed\debug\support-v4-18.0.0-d817c4c5018f3e549b2d922865ff31464a26ccc2.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Admin\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\18.0.0\support-v4-18.0.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="44ec51e9d395a47aab135e5e1b556c0007442156">
+        <dex dex="C:\BTH\IEP\docs\ImageEnhancerExample_1-1\ImageEnhancerExample\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-v4-18.0.0_d817c4c5018f3e549b2d922865ff31464a26ccc2\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\BTH\IEP\docs\ImageEnhancerExample_1-1\ImageEnhancerExample\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="613f34cbddc532b2d5b223f62888de7e51ceb3f5">
+        <dex dex="C:\BTH\IEP\docs\ImageEnhancerExample_1-1\ImageEnhancerExample\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_e7fe4f59c6e3a4739a6da06cb840da1317f41881\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\BTH\IEP\docs\ImageEnhancerExample_1-1\ImageEnhancerExample\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="3be78ebc2706b2e1fe2f12d5726887a92d6c183b">
+        <dex dex="C:\BTH\IEP\docs\ImageEnhancerExample_1-1\ImageEnhancerExample\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run_f9826e49c6913c818be8e4ebfabcb6b11e8fa0cf\classes.dex" />
+    </item>
+
+</items>

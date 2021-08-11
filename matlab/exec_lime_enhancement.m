@@ -20,7 +20,6 @@ params = optimized_params(row, 1:2);
 mu = params(1);
 rho = params(2);
 iter = 30; % number of iterations for lime solver (default 50)
-flag = 1;
 
 level = 3; % decides the depth of the haar transform
 th_type = "soft"; % soft or hard threashold policy for filtering
@@ -35,7 +34,7 @@ orig_img = imread('building.bmp');
 % orig_img = imread('GreenRoom33.jpg');
 % orig_img = imread('lamp.bmp');
 % orig_img = imread('moon.bmp');
-[Ti, Tout, enh_img, Inr] = exec_lime_main_module(orig_img, mu, rho, iter, flag, level, th_type);
+[Ti, Tout, enh_img, Inr] = exec_lime_main_module(orig_img, mu, rho, iter, level, th_type);
  
 disp('Cumulative difference:');
 sum(abs(enh_img - Inr), "all")
