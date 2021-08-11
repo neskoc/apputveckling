@@ -1,12 +1,7 @@
-% orig_img = imread('spine.tif');
-% orig_img = imread('building.bmp');
-% orig_img = imread('testbild.jpg');
-% orig_img = imread('testbildcolor.jpg');
-% orig_img = imread('cars.bmp');
-% orig_img = imread('land.bmp');
-% orig_img = imread('GreenRoom33.jpg');
+addpath('./images');
+
 orig_img = imread('lamp.bmp');
-% orig_img = imread('moon.bmp');
+
 
 level = 5;
 th_type = "soft"; % soft or hard threashold policy for filtering
@@ -41,7 +36,7 @@ nn = 2^lev_cols;
 if (mm > m || nn > n)
     X = zeros(mm, nn, 'double');
     if c == 3
-        X(1:m, 1:n) = Vbf_norm_w_noise * 255;
+        X(1:m, 1:n) = Vbf_norm * 255;
     else
         X(1:m, 1:n) = orig_img_w_noise;
     end
@@ -76,28 +71,24 @@ else
 end
 Inr = cast(Inr(1:m, 1:n,:),'uint8'); % cast to uint8 for plotting
 
-subplot(1, 2, 1);
+Imbilatfilt = imbilatfilt(orig_img_w_noise);
+
+subplot(1, 3, 1);
 imshow(orig_img_w_noise, []);
 title('With gaussian noise');
 
-subplot(1, 2, 2);
+subplot(1, 3, 2);
 imshow(Inr);
-title('Recovered');
+title('Recovered: Haar');
+
+subplot(1, 3, 3);
+imshow(Imbilatfilt);
+title('Recovered: Imbilatfilt');
 
 figure, montage({orig_img_w_noise, Inr});
 
-% subplot(1, 4, 1);
-% imshow(orig_img);
-% title('Original');
-% 
-% subplot(1, 4, 2);
-% imshow(orig_img_w_noise, []);
-% title('With gaussian noise');
-% 
-% subplot(1, 4, 3);
-% imshow(Iout_hw, []);
-% title('Transformed');
-% 
-% subplot(1, 4, 4);
-% imshow(Inr);
-% title('Recovered');
+figure, montage({orig_img_w_noise, Imbilatfilt});
+
+Inr_mad = mad(cast(Inr,'double'), 1, 'all');
+Imbilatfilt_mad = cast(mad(255*Imbilatfilt, 1, 'all'),'double');
+[Inr_mad Imbilatfilt_mad]

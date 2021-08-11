@@ -2,6 +2,8 @@
 % Ti / Tout are in and enhanced illumination maps,
 % img_out and Iout are enhanced and image with reduced noise.
 
+addpath('./images');
+
 % Table with optimized parameters for different images
 optimized_params = [
     0.01,  1.188;
@@ -15,7 +17,7 @@ optimized_params = [
     0.01,  1.165
     ];
 
-row = 3; % max value = 9
+row = 1; % max value = 9
 params = optimized_params(row, 1:2);
 mu = params(1);
 rho = params(2);
