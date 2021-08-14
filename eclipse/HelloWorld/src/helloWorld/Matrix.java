@@ -13,8 +13,19 @@ import java.lang.Math;
  * Robert Sedgewick and Kevin Wayne.
  * 
  * Added methods:
- * dotTimes - elementwise multiplication
- * convWithStride(A, B, stride) - convolution of A with B using stride
+ *   getDimensions - get # of rows and columns
+ *   reduce - crop to first (mm,nn) elements
+ *   toArray - stretch Matrix to array
+ *   sum - return sum of all elements
+ *   median - calculate Matrix median
+ *   std2 - return standard deviation of all elements in Matrix
+ *   abs - return abs(Matrix)
+ *   apply_threshold - filter out elements that has abs value greater then threshold
+ *   concatV - concatenate two Matrises vertically
+ *   concatH - concatenate two Matrises horizontally
+ *   dotTimes - elementwise multiplication
+ *   convWithStride(A, B, stride) - convolution of A with B using stride
+ *
  */
 
 final public class Matrix {
@@ -42,11 +53,11 @@ final public class Matrix {
     	return new int[] {this.m, this.n};
     }
     
-    public Matrix reduce(int m, int n) {
-    	double[][] reduced = new double[m][n];
+    public Matrix reduce(int mm, int nn) {
+    	double[][] reduced = new double[mm][nn];
     	double[][] x = this.getData();
-    	for (int i = 0; i < m; i++)
-    		System.arraycopy(x[i], 0, reduced[i], 0, n);
+    	for (int i = 0; i < mm; i++)
+    		System.arraycopy(x[i], 0, reduced[i], 0, nn);
     	return new Matrix(reduced);
     }
     
@@ -104,6 +115,21 @@ final public class Matrix {
         	for (int j = 0; j < n; j++)
         		res[i][j] = Math.abs(this.data[i][j]);
 		return new Matrix(res);
+	}
+	
+	public Matrix apply_threshold(double threshold, String th_type) {
+		double[][] absData = this.abs().getData();
+		for (int i = 0; i < m; i++)
+			for (int j = 0; j < n; j++)
+				if (absData[i][j] > threshold) {
+					if (th_type == "soft") {
+						this.data[i][j] = this.data[i][j] - threshold * Math.signum(this.data[i][j]);
+					}
+					else {
+						this.data[i][j] = 0;
+					}
+				}
+		return this;
 	}
 
     // copy constructor

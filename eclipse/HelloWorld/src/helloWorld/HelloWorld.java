@@ -58,6 +58,11 @@ public class HelloWorld {
         C = filterMatrix.concatH(filterMatrix4);
         C.show();
         System.out.println();
+
+        System.out.println("Reduce (crop) Matrix:");
+        Matrix reduced = D.reduce(2,2);
+        reduced.show();
+        System.out.println();
         
 //        double[] tmpArr = new double[2];
 //        System.arraycopy(d[1], 1, tmpArr, 0, 2);

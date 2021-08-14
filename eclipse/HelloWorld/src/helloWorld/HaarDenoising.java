@@ -24,17 +24,6 @@ public class HaarDenoising implements ImageEnhancer {
 		// calculate log2 for int a
 	    return (int) (Math.log(a) / Math.log(2));
 	}
-	
-	public static double sigthresh(Matrix M, int level, Matrix test_matrix) {
-		int[] dim = M.getDimensions();
-		int length = Math.max(dim[0], dim[1]);
-		
-		double c = 0.6745;
-		double variance = Math.pow(M.abs().median() / c, 2);
-		double beta = Math.sqrt((double)Math.log(length) / level);
-		double T = beta * variance / test_matrix.std2();
-		return T;
-	}
 
 	public Matrix Haar2D(Matrix X) {
 		double[][] lr_filter = { { 0.25, 0.25}, { 0.25, 0.25} };
@@ -54,7 +43,7 @@ public class HaarDenoising implements ImageEnhancer {
 	}
 	
 	public Matrix full_Haar2D(Matrix X, int level) {
-	    // requirement: level < max_levlels = min(lev_rows - 1, lev_cols - 1) where
+	    // requirement: level < max_allowed_levlel = min(lev_rows - 1, lev_cols - 1) where
 	    // lev_rows = log2(m);
 	    // lev_cols = log2(n);
 		int dim_reduction;
@@ -115,6 +104,22 @@ public class HaarDenoising implements ImageEnhancer {
 	        Inverse = iHaar2D(Inverse.reduce(dim[0]/dim_reduction, dim[1]/dim_reduction));
 		}
 		return Inverse;
+	}
+	
+	public static double sigthresh(Matrix M, int level, Matrix test_matrix) {
+		int[] dim = M.getDimensions();
+		int length = Math.max(dim[0], dim[1]);
+		
+		double c = 0.6745;
+		double variance = Math.pow(M.abs().median() / c, 2);
+		double beta = Math.sqrt((double)Math.log(length) / level);
+		double T = beta * variance / test_matrix.std2();
+		return T;
+	}
+	
+	public Matrix apply_haar_filter(Matrix M, int level, String th_type, Matrix HH_matrix) {
+		double threshold = sigthresh(M, level, HH_matrix);
+		return M.apply_threshold(threshold, th_type);
 	}
 
 	public VolatileImage enhanceImageHSV(VolatileImage theImage, int action) {
