@@ -1,17 +1,14 @@
-/**
- * 
- */
-package helloWorld;
+package com.softa.imageenhancer;
 
 import java.util.Arrays;
 import java.lang.Math;
 
 /**
  * @author nesko
- * 
+ *
  * Base Matrix class comes from
  * Robert Sedgewick and Kevin Wayne.
- * 
+ *
  * Added methods:
  *   getDimensions - get # of rows and columns
  *   reduce - crop to first (mm,nn) elements
@@ -46,95 +43,93 @@ final public class Matrix {
         n = data[0].length;
         this.data = new double[m][n];
         System.arraycopy(data, 0, this.data, 0, m);
-//        for (int i = 0; i < m; i++)
-//        	this.data[i] = data[i];
     }
-    
+
     public int[] getDimensions() {
-    	return new int[] {this.m, this.n};
+        return new int[] {this.m, this.n};
     }
-    
+
     public Matrix reduce(int mm, int nn) {
-    	double[][] reduced = new double[mm][nn];
-    	double[][] x = this.getData();
-    	for (int i = 0; i < mm; i++)
-    		System.arraycopy(x[i], 0, reduced[i], 0, nn);
-    	return new Matrix(reduced);
+        double[][] reduced = new double[mm][nn];
+        double[][] x = this.getData();
+        for (int i = 0; i < mm; i++)
+            System.arraycopy(x[i], 0, reduced[i], 0, nn);
+        return new Matrix(reduced);
     }
-    
+
     public double[][] getData() {
-    	return this.data;
+        return this.data;
     }
-    
+
     public double sum() {
         double	sum = 0.0;
         for (int i = 0; i < m; i++)
-        	for (int j = 0; j < n; j++)
-        		sum += this.data[i][j];
-    	return sum;
-    }
-	
-	public double std2()
-    {
-		double standardDeviation = 0.0;
-		int size = this.m * this.n;
-	
-		double sum = sum();
-		double mean = sum / size;
-		
-		for (int i = 0; i < m; i++)
-			for (int j = 0; j < n; j++)
-				standardDeviation += Math.pow(this.data[i][j] - mean, 2);
-		return Math.sqrt(standardDeviation / size);
+            for (int j = 0; j < n; j++)
+                sum = sum + this.data[i][j];
+        return sum;
     }
 
-	public double[] toArray() {
-		double[] array = new double[m * n];
-		for(int i = 0; i < m; i++)
-			System.arraycopy(this.data[i], 0, array, (i * n), n);
-		return array;
-	}
-	
-	public double median()
-	{
-		int size = this.m * this.n;
-		double res = 0.0;
-		double[] array = this.toArray();
-		Arrays.sort(array);
-		
-		if (size % 2 == 1)
-			res = array[((size + 1) / 2) - 1];
-		else
-			res = (array[n/2 - 1] + array[n/2]) / 2;
-		return res;
-	}
-	
-	public Matrix abs() {
-		double[][] res = new double[m][n];
-		for (int i = 0; i < m; i++)
-        	for (int j = 0; j < n; j++)
-        		res[i][j] = Math.abs(this.data[i][j]);
-		return new Matrix(res);
-	}
-	
-	public Matrix apply_threshold(double threshold, String th_type) {
-		double[][] absData = this.abs().getData();
-		for (int i = 0; i < m; i++)
-			for (int j = 0; j < n; j++)
-				if (absData[i][j] > threshold) {
-					if (th_type.equals("soft")) {
-						this.data[i][j] = this.data[i][j] - threshold * Math.signum(this.data[i][j]);
-					}
-					else {
-						this.data[i][j] = 0;
-					}
-				}
-		return this;
-	}
+    public double std2()
+    {
+        double standardDeviation = 0.0;
+        int size = this.m * this.n;
+
+        double sum = sum();
+        double mean = sum / size;
+
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                standardDeviation += Math.pow(this.data[i][j] - mean, 2);
+        return Math.sqrt(standardDeviation / size);
+    }
+
+    public double[] toArray() {
+        double[] array = new double[m * n];
+        for(int i = 0; i < m; i++)
+            System.arraycopy(this.data[i], 0, array, (i * n), n);
+        return array;
+    }
+
+    public double median()
+    {
+        int size = this.m * this.n;
+        double res = 0.0;
+        double[] array = this.toArray();
+        Arrays.sort(array);
+
+        if (size % 2 == 1)
+            res = array[((size + 1) / 2) - 1];
+        else
+            res = (array[n/2 - 1] + array[n/2]) / 2;
+        return res;
+    }
+
+    public Matrix abs() {
+        double[][] res = new double[m][n];
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                res[i][j] = Math.abs(this.data[i][j]);
+        return new Matrix(res);
+    }
+
+    public Matrix apply_threshold(double threshold, String th_type) {
+        double[][] absData = this.abs().getData();
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                if (absData[i][j] > threshold) {
+                    if (th_type.equals("soft")) {
+                        this.data[i][j] = this.data[i][j] - threshold * Math.signum(this.data[i][j]);
+                    }
+                    else {
+                        this.data[i][j] = 0;
+                    }
+                }
+        return this;
+    }
 
     // copy constructor
     private Matrix(Matrix A) {
-    	this(A.data);
+        this(A.data);
     }
 
     // create and return a random m-by-n matrix with values between 0 and 1
@@ -188,10 +183,6 @@ final public class Matrix {
         Matrix C = new Matrix(A.m + B.m, A.n);
         if (A.m >= 0) System.arraycopy(A.data, 0, C.data, 0, A.m);
         if (B.m >= 0) System.arraycopy(B.data, 0, C.data, A.m, B.m);
-//        for (int i = 0; i < A.m; i++)
-//            C.data[i] = A.data[i];
-//        for (int i = 0; i < B.m; i++)
-//            C.data[A.m + i] = B.data[i];
         return C;
     }
 
@@ -203,9 +194,9 @@ final public class Matrix {
         double[][] a = A.getData();
         double[][] b = B.getData();
         for (int i = 0; i < A.m; i++)
-        	System.arraycopy(a[i], 0, c[i], 0, A.n);
+            System.arraycopy(a[i], 0, c[i], 0, A.n);
         for (int i = 0; i < B.m; i++)
-        	System.arraycopy(b[i], 0, c[i], A.n, B.n);
+            System.arraycopy(b[i], 0, c[i], A.n, B.n);
         return new Matrix(c);
     }
 
@@ -250,14 +241,14 @@ final public class Matrix {
         Matrix C = new Matrix(A.m, A.n);
         for (int i = 0; i < C.m; i++)
             for (int j = 0; j < C.n; j++)
-            	C.data[i][j] += (A.data[i][j] * B.data[i][j]);
+                C.data[i][j] += (A.data[i][j] * B.data[i][j]);
         return C;
     }
-    
+
     // return C = A.convWithStride(B), B is square matrix
     // stride is equal do dimension of B
     public Matrix convWithStride(Matrix B) {
-    	int mm, nn;
+        int mm, nn;
         int stride = B.n;
         double partSum;
         Matrix A = this;
@@ -268,10 +259,10 @@ final public class Matrix {
         Matrix C = new Matrix(mm, nn);
         for (int i = 0; i < mm; i++)
             for (int j = 0; j < nn; j++) {
-        		partSum = 0;
-            	for(int k = i*stride; k < (i+1)*stride; k++)
-            		for(int l = j*stride; l < (j+1)*stride; l++)
-            			partSum += A.data[k][l] * B.data[k%stride][l%stride];
+                partSum = 0;
+                for(int k = i*stride; k < (i+1)*stride; k++)
+                    for(int l = j*stride; l < (j+1)*stride; l++)
+                        partSum += A.data[k][l] * B.data[k%stride][l%stride];
                 C.data[i][j] += partSum;
             }
         return C;
@@ -324,13 +315,13 @@ final public class Matrix {
             x.data[j][0] = (b.data[j][0] - t) / A.data[j][j];
         }
         return x;
-   
+
     }
 
     // print matrix to standard output
     public void show() {
         for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) 
+            for (int j = 0; j < n; j++)
                 System.out.printf("%9.4f ", data[i][j]);
             System.out.println();
         }

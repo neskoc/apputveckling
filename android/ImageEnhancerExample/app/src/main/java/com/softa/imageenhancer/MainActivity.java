@@ -201,8 +201,9 @@ public class MainActivity extends FragmentActivity {
 	
 	private List<ImageEnhancer> getEnhancers() {
 		ArrayList<ImageEnhancer> enhancers = new ArrayList<ImageEnhancer>();
-		
-		enhancers.add(new TestEnhancer()); // Here below additional enhancers can be added
+
+		enhancers.add(new HaarDWTEnhancer()); // Here below additional enhancers can be added
+		enhancers.add(new TestEnhancer());
 		return enhancers;
 	}
 	

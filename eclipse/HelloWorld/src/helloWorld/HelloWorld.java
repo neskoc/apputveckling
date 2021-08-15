@@ -14,7 +14,8 @@ public class HelloWorld {
         System.out.println("Filter:");
         filterMatrix.show();
         System.out.println();
-        
+
+        System.out.println("convWithStride:");
         Matrix C = D.convWithStride(filterMatrix);
         C.show();
         System.out.println();
@@ -24,7 +25,8 @@ public class HelloWorld {
         System.out.println("Filter 2:");
         filterMatrix.show();
         System.out.println();
-        
+
+        System.out.println("convWithStride:");
         C = D.convWithStride(filterMatrix);
         C.show();
         System.out.println();
@@ -34,7 +36,8 @@ public class HelloWorld {
         System.out.println("Filter 3:");
         filterMatrix.show();
         System.out.println();
-        
+
+        System.out.println("convWithStride:");
         C = D.convWithStride(filterMatrix);
         C.show();
         System.out.println();
@@ -44,7 +47,8 @@ public class HelloWorld {
         System.out.println("Filter 4:");
         filterMatrix4.show();
         System.out.println();
-        
+
+        System.out.println("convWithStride:");
         C = D.convWithStride(filterMatrix);
         C.show();
         System.out.println();
