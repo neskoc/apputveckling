@@ -1,15 +1,23 @@
 package helloWorld;
 
+import java.util.Arrays;
+
 public class HelloWorld {
+	
+	public static int log2(int a)
+	{
+		// calculate log2 for a (integer)
+	    return (int) (Math.log(a) / Math.log(2));
+	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		double[][] d = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 17, 18, 19, 20 }, { 9, 10, 11, 12 } };
+		float[][] d = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 17, 18, 19, 20 }, { 9, 10, 11, 12 } };
         Matrix D = new Matrix(d);
         System.out.println("Matrix D:");
         D.show();
         
-		double[][] filter = { { 1, 1 }, { 1, 1 } };
+		float[][] filter = { { 1, 1 }, { 1, 1 } };
         Matrix filterMatrix = new Matrix(filter);
         System.out.println("Filter:");
         filterMatrix.show();
@@ -20,7 +28,7 @@ public class HelloWorld {
         C.show();
         System.out.println();
 
-        filter = new double[][] { { 1, 1 }, { -1, -1 } };
+        filter = new float[][] { { 1, 1 }, { -1, -1 } };
         filterMatrix = new Matrix(filter);
         System.out.println("Filter 2:");
         filterMatrix.show();
@@ -31,7 +39,7 @@ public class HelloWorld {
         C.show();
         System.out.println();
 
-        filter = new double[][] { { 1, -1 }, { 1, -1 } };
+        filter = new float[][] { { 1, -1 }, { 1, -1 } };
         filterMatrix = new Matrix(filter);
         System.out.println("Filter 3:");
         filterMatrix.show();
@@ -42,7 +50,7 @@ public class HelloWorld {
         C.show();
         System.out.println();
 
-        filter = new double[][] { { 1, -1 }, { -1, 1 } };
+        filter = new float[][] { { 1, -1 }, { -1, 1 } };
         Matrix filterMatrix4 = new Matrix(filter);
         System.out.println("Filter 4:");
         filterMatrix4.show();
@@ -63,12 +71,51 @@ public class HelloWorld {
         C.show();
         System.out.println();
 
-        System.out.println("Reduce (crop) Matrix:");
+        System.out.println("Reduce Matrix:");
         Matrix reduced = D.reduce(2,2);
         reduced.show();
         System.out.println();
+
+        System.out.println("Expand Matrix:");
+        Matrix expanded = D.expand(8, 16);
+        expanded.show();
+        System.out.println();
+
+        System.out.println("Expand Matrix from array:");
+        float[] array = D.toArray();
+	    Matrix X = Matrix.array2Matrix(array, 4, 4).expand(6,8);
+	    X.show();
+        System.out.println();
+
+        System.out.println("Crop Matrix D:");
+        Matrix cropped = D.crop(2, 2, 1, 2);
+        cropped.show();
+        System.out.println();
         
-//        double[] tmpArr = new double[2];
+
+		int lev_rows = log2(10);
+	    int lev_cols = log2(12);
+	    int mm = (int) Math.pow(2, lev_rows);
+	    int nn = (int) Math.pow(2, lev_cols);
+	    int level = 2;
+
+	    int mw = mm / (int) Math.pow(2, level);
+	    int nw = nn /  (int) Math.pow(2, level);
+
+	    Matrix w1 = expanded.reduce(mw, nw);
+	    Matrix w2 = expanded.crop(mw, nw, nw, 0);
+	    Matrix w3 = expanded.crop(mw, nw, 0, mw);
+	    Matrix w4 = expanded.crop(mw, nw, nw, mw);
+	    w1.show();
+        System.out.println();
+	    w2.show();
+        System.out.println();
+	    w3.show();
+        System.out.println();
+	    w4.show();
+        System.out.println();
+        
+//        float[] tmpArr = new float[2];
 //        System.arraycopy(d[1], 1, tmpArr, 0, 2);
 //        for (int j = 0; j < tmpArr.length; j++) 
 //            System.out.printf("%9.4f ", tmpArr[j]);

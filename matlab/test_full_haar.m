@@ -1,3 +1,5 @@
+addpath('./images');
+
 % orig_img = imread('spine.tif');
 % orig_img = imread('building.bmp');
 % orig_img = imread('testbild.jpg');
@@ -57,9 +59,10 @@ wx_max = floor(m / 2^level);
 wy_max = floor(n / 2^level);
 
 %    [sigthresh(w2(1:Wx_max,1:Wy_max), level, w2(1:Wx_max,1:Wy_max)) sigthresh(w3(1:Wx_max,1:Wy_max), level, w2(1:Wx_max,1:Wy_max)) sigthresh(w4(1:Wx_max,1:Wy_max), level, w2(1:Wx_max,1:Wy_max))]
-w2(1:wx_max, 1:wy_max) = apply_haar_filter(w2(1:wx_max, 1:wy_max), level, th_type, w2(1:wx_max, 1:wy_max));
-w3(1:wx_max, 1:wy_max) = apply_haar_filter(w3(1:wx_max, 1:wy_max), level, th_type, w2(1:wx_max, 1:wy_max));
+
 w4(1:wx_max, 1:wy_max) = apply_haar_filter(w4(1:wx_max, 1:wy_max), level, th_type, w2(1:wx_max, 1:wy_max));
+w3(1:wx_max, 1:wy_max) = apply_haar_filter(w3(1:wx_max, 1:wy_max), level, th_type, w2(1:wx_max, 1:wy_max));
+w2(1:wx_max, 1:wy_max) = apply_haar_filter(w2(1:wx_max, 1:wy_max), level, th_type, w2(1:wx_max, 1:wy_max));
 
 Iout_forward = Iout_hw;
 Iout_forward(1:2*mm/2^level, 1:2*nn/2^level) = [w1 w2; w3 w4];

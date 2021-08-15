@@ -42,6 +42,16 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 
 		// Here below some manipulations of the image is made as examples.
 		// This should be changed to your image enhancement algorithms.
+
+		int lev_rows = log2(height);
+		int lev_cols = log2(width);
+		int mm = (int) Math.pow(2, lev_rows);
+		int nn = (int) Math.pow(2,lev_cols);
+		int level = 5;
+
+		Matrix Iout_hw = full_Haar2D(Matrix.array2Matrix(pixels, width, height), level);
+
+		/*
 		if (action != ACTION_3) {
             float maxValue = 0;
             for (int i = 0; i < hsvPixels.length; i++) {
@@ -61,6 +71,7 @@ public class HaarDWTEnhancer implements ImageEnhancer {
             }
             Log.d("DEBUG", "saturation zeroed");
         }
+        */
 		progress = 80;
 		Log.d("DEBUG","creating BITMAP,width x height "+width+" "+height);
         Bitmap modifiedImage = Bitmap.createBitmap(width, height, Config.ARGB_8888);
@@ -103,6 +114,109 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 	@Override
 	public String[] getConfigurationOptions() {
 		return new String[]{ "Action 0", "Action 1", "Action 2", "Action 3"};
+	}
+
+
+	public static int log2(int a)
+	{
+		// calculate log2 for a (integer)
+		return (int) (Math.log(a) / Math.log(2));
+	}
+
+	public Matrix Haar2D(Matrix X) {
+		float[][] lr_filter = { { (float) 0.25, (float) 0.25}, { (float) 0.25, (float) 0.25} };
+		float[][] hc_filter = { { (float) 0.25, (float) 0.25}, { (float) -0.25, (float) -0.25} };
+		float[][] vc_filter = { { (float) 0.25, (float) -0.25}, { (float) 0.25, (float) -0.25} };
+		float[][] dc_filter = { { (float) 0.25, (float) -0.25}, { (float) -0.25, (float) 0.25} };
+
+		Matrix w1 = X.convWithStride(new Matrix(lr_filter));
+		Matrix w2 = X.convWithStride(new Matrix(hc_filter));
+		Matrix w3 = X.convWithStride(new Matrix(vc_filter));
+		Matrix w4 = X.convWithStride(new Matrix(dc_filter));
+
+		Matrix resultH_up = w1.concatH(w2);
+		Matrix resultH_down = w3.concatH(w4);
+
+		return resultH_up.concatV(resultH_down);
+	}
+
+	public Matrix full_Haar2D(Matrix X, int level) {
+		// requirement: level < max_allowed_levlel = min(lev_rows - 1, lev_cols - 1) where
+		// lev_rows = log2(m);
+		// lev_cols = log2(n);
+		int dim_reduction;
+		int[] dim = X.getDimensions();
+		Matrix Forward = X;
+
+		for (int i = 1; i < level; i++) {
+			// dim reduction for 2dhaar transform depending on the transform level
+			dim_reduction = (int) Math.pow(2, i-1);
+			Forward = Haar2D(Forward.reduce(dim[0]/dim_reduction, dim[1]/dim_reduction));
+		}
+		return Forward;
+	}
+
+	public Matrix iHaar2D(Matrix X) {
+		float[][] x = X.getData();
+		int[] dim = X.getDimensions();
+		int mm = dim[0] / 2;
+		int nn = dim[1] / 2;
+		float[][] y = new float[dim[0]][dim[1]];
+
+		float[][] w1 = new float[mm][nn];
+		float[][] w2 = new float[mm][nn];
+		float[][] w3 = new float[mm][nn];
+		float[][] w4 = new float[mm][nn];
+
+		for (int i = 0; i < mm; i++) {
+			System.arraycopy(x[i], 0, w1[i], 0, nn);
+			System.arraycopy(x[i], nn, w2[i], 0, nn);
+			System.arraycopy(x[mm + i], 0, w3[i], 0, nn);
+			System.arraycopy(x[mm + i], nn, w4[i], 0, nn);
+		}
+		for (int i = 0 ; i < mm; i++) {
+			int ii= i * 2 - 1;
+			for (int j = 0; j < nn; j++) {
+				int jj = j * 2 - 1;
+				y[ii][jj]     = w1[i][j] + w2[i][j] + w3[i][j] + w4[i][j];
+				y[ii][jj+1]   = w1[i][j] + w2[i][j] - w3[i][j] - w4[i][j];
+				y[ii+1][jj]   = w1[i][j] - w2[i][j] + w3[i][j] - w4[i][j];
+				y[ii+1][jj+1] = w1[i][j] - w2[i][j] - w3[i][j] + w4[i][j];
+			}
+		}
+		return new Matrix(y);
+	}
+
+	public Matrix full_iHaar2D(Matrix X, int level) {
+		// 2D Haar inverse wavelet transform
+		// assuming the dimensions are the power of 2!
+		// level determines number of ihaar2d iterations
+		// Iout_inverse = higher-resolution image
+		int dim_reduction;
+		int[] dim = X.getDimensions();
+		Matrix Inverse = X;
+
+		for (int i = level; i > 0; i--) {
+			// dim reduction for 2dhaar transform depending on the transform level
+			dim_reduction = (int) Math.pow(2, i-1);
+			Inverse = iHaar2D(Inverse.reduce(dim[0]/dim_reduction, dim[1]/dim_reduction));
+		}
+		return Inverse;
+	}
+
+	public static float sigthresh(Matrix M, int level, Matrix test_matrix) {
+		int[] dim = M.getDimensions();
+		int length = Math.max(dim[0], dim[1]);
+
+		float c = (float) 0.6745;
+		float variance = (float) Math.pow(M.abs().median() / c, 2);
+		float beta = (float) Math.sqrt((float)Math.log(length) / level);
+		return beta * variance / test_matrix.std2(); // T in Matlab
+	}
+
+	public Matrix apply_haar_filter(Matrix M, int level, String th_type, Matrix HH_matrix) {
+		float threshold = sigthresh(M, level, HH_matrix);
+		return M.apply_threshold(threshold, th_type);
 	}
 
 }

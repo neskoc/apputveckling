@@ -39,9 +39,9 @@ function [Inr] = exec_full_haar_main_module(orig_img, level, th_type)
     wx_max = floor(m / 2^level);
     wy_max = floor(n / 2^level);
     
-    w2(1:wx_max, 1:wy_max) = apply_haar_filter(w2(1:wx_max, 1:wy_max), level, th_type, w2(1:wx_max, 1:wy_max));
-    w3(1:wx_max, 1:wy_max) = apply_haar_filter(w3(1:wx_max, 1:wy_max), level, th_type, w2(1:wx_max, 1:wy_max));
     w4(1:wx_max, 1:wy_max) = apply_haar_filter(w4(1:wx_max, 1:wy_max), level, th_type, w2(1:wx_max, 1:wy_max));
+    w3(1:wx_max, 1:wy_max) = apply_haar_filter(w3(1:wx_max, 1:wy_max), level, th_type, w2(1:wx_max, 1:wy_max));
+    w2(1:wx_max, 1:wy_max) = apply_haar_filter(w2(1:wx_max, 1:wy_max), level, th_type, w2(1:wx_max, 1:wy_max));
     
     Iout_forward = Iout_hw;
     Iout_forward(1:2*mm/2^level, 1:2*nn/2^level) = [w1 w2; w3 w4];

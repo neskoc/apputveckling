@@ -1,3 +1,6 @@
+/**
+ *
+ */
 package com.softa.imageenhancer;
 
 import java.util.Arrays;
@@ -8,11 +11,13 @@ import java.lang.Math;
  *
  * Base Matrix class comes from
  * Robert Sedgewick and Kevin Wayne.
+ * url: https://introcs.cs.princeton.edu/java/95linear/Matrix.java.html
  *
  * Added methods:
  *   getDimensions - get # of rows and columns
  *   reduce - crop to first (mm,nn) elements
  *   toArray - stretch Matrix to array
+ *   array2Matrix - transform array to matrix
  *   sum - return sum of all elements
  *   median - calculate Matrix median
  *   std2 - return standard deviation of all elements in Matrix
@@ -28,21 +33,23 @@ import java.lang.Math;
 final public class Matrix {
     private final int m;             // number of rows
     private final int n;             // number of columns
-    private final double[][] data;   // m-by-n array
+    private final float[][] data;   // m-by-n array
 
     // create m-by-n matrix of 0's
     public Matrix(int m, int n) {
         this.m = m;
         this.n = n;
-        data = new double[m][n];
+        data = new float[m][n];
     }
 
     // create matrix based on 2d array
-    public Matrix(double[][] data) {
+    public Matrix(float[][] data) {
         m = data.length;
         n = data[0].length;
-        this.data = new double[m][n];
+        this.data = new float[m][n];
         System.arraycopy(data, 0, this.data, 0, m);
+//        for (int i = 0; i < m; i++)
+//        	this.data[i] = data[i];
     }
 
     public int[] getDimensions() {
@@ -50,51 +57,58 @@ final public class Matrix {
     }
 
     public Matrix reduce(int mm, int nn) {
-        double[][] reduced = new double[mm][nn];
-        double[][] x = this.getData();
+        float[][] reduced = new float[mm][nn];
+        float[][] x = this.getData();
         for (int i = 0; i < mm; i++)
             System.arraycopy(x[i], 0, reduced[i], 0, nn);
         return new Matrix(reduced);
     }
 
-    public double[][] getData() {
+    public float[][] getData() {
         return this.data;
     }
 
-    public double sum() {
-        double	sum = 0.0;
+    public float sum() {
+        float	sum = (float) 0.0;
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
-                sum = sum + this.data[i][j];
+                sum += this.data[i][j];
         return sum;
     }
 
-    public double std2()
+    public float std2()
     {
-        double standardDeviation = 0.0;
+        float standardDeviation = (float) 0.0;
         int size = this.m * this.n;
 
-        double sum = sum();
-        double mean = sum / size;
+        float sum = sum();
+        float mean = sum / size;
 
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 standardDeviation += Math.pow(this.data[i][j] - mean, 2);
-        return Math.sqrt(standardDeviation / size);
+        return (float) Math.sqrt(standardDeviation / size);
     }
 
-    public double[] toArray() {
-        double[] array = new double[m * n];
+    public float[] toArray() {
+        float[] array = new float[m * n];
         for(int i = 0; i < m; i++)
             System.arraycopy(this.data[i], 0, array, (i * n), n);
         return array;
     }
 
-    public double median()
+    public static Matrix array2Matrix(int[] array, int width, int height) {
+        float[][] toMatrix = new float[width][height];
+        for (int i = 0; i < height; i++)
+            System.arraycopy(array, 0, toMatrix[i], 0, width);
+        return new Matrix(toMatrix);
+    }
+
+    public float median()
     {
         int size = this.m * this.n;
-        double res = 0.0;
-        double[] array = this.toArray();
+        float res = (float) 0.0;
+        float[] array = this.toArray();
         Arrays.sort(array);
 
         if (size % 2 == 1)
@@ -105,15 +119,15 @@ final public class Matrix {
     }
 
     public Matrix abs() {
-        double[][] res = new double[m][n];
+        float[][] res = new float[m][n];
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 res[i][j] = Math.abs(this.data[i][j]);
         return new Matrix(res);
     }
 
-    public Matrix apply_threshold(double threshold, String th_type) {
-        double[][] absData = this.abs().getData();
+    public Matrix apply_threshold(float threshold, String th_type) {
+        float[][] absData = this.abs().getData();
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 if (absData[i][j] > threshold) {
@@ -137,7 +151,7 @@ final public class Matrix {
         Matrix A = new Matrix(m, n);
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
-                A.data[i][j] = Math.random();
+                A.data[i][j] = (float) Math.random();
         return A;
     }
 
@@ -151,7 +165,7 @@ final public class Matrix {
 
     // swap rows i and j
     public void swap(int i, int j) {
-        double[] temp = data[i];
+        float[] temp = data[i];
         data[i] = data[j];
         data[j] = temp;
     }
@@ -183,6 +197,10 @@ final public class Matrix {
         Matrix C = new Matrix(A.m + B.m, A.n);
         if (A.m >= 0) System.arraycopy(A.data, 0, C.data, 0, A.m);
         if (B.m >= 0) System.arraycopy(B.data, 0, C.data, A.m, B.m);
+//        for (int i = 0; i < A.m; i++)
+//            C.data[i] = A.data[i];
+//        for (int i = 0; i < B.m; i++)
+//            C.data[A.m + i] = B.data[i];
         return C;
     }
 
@@ -190,9 +208,9 @@ final public class Matrix {
     public Matrix concatH(Matrix B) {
         Matrix A = this;
         if (B.m != A.m) throw new RuntimeException("Illegal matrix dimensions. Matrix B.m != A.m");
-        double[][] c = new double[A.n][A.m + B.m];
-        double[][] a = A.getData();
-        double[][] b = B.getData();
+        float[][] c = new float[A.n][A.m + B.m];
+        float[][] a = A.getData();
+        float[][] b = B.getData();
         for (int i = 0; i < A.m; i++)
             System.arraycopy(a[i], 0, c[i], 0, A.n);
         for (int i = 0; i < B.m; i++)
@@ -250,7 +268,7 @@ final public class Matrix {
     public Matrix convWithStride(Matrix B) {
         int mm, nn;
         int stride = B.n;
-        double partSum;
+        float partSum;
         Matrix A = this;
         if (B.n != B.m) throw new RuntimeException("B must be square matrix!");
         if (A.n % B.n != 0 || A.m % B.m != 0) throw new RuntimeException("Illegal matrix dimensions.");
@@ -298,18 +316,18 @@ final public class Matrix {
 
             // pivot within A
             for (int j = i + 1; j < n; j++) {
-                double m = A.data[j][i] / A.data[i][i];
+                float m = A.data[j][i] / A.data[i][i];
                 for (int k = i+1; k < n; k++) {
                     A.data[j][k] -= A.data[i][k] * m;
                 }
-                A.data[j][i] = 0.0;
+                A.data[j][i] = (float) 0.0;
             }
         }
 
         // back substitution
         Matrix x = new Matrix(n, 1);
         for (int j = n - 1; j >= 0; j--) {
-            double t = 0.0;
+            float t = (float) 0.0;
             for (int k = j + 1; k < n; k++)
                 t += A.data[j][k] * x.data[k][0];
             x.data[j][0] = (b.data[j][0] - t) / A.data[j][j];

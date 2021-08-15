@@ -3,7 +3,7 @@
  */
 package helloWorld;
 
-import java.awt.image.VolatileImage;
+import java.awt.image.BufferedImage;
 
 /**
  * @author nesko
@@ -11,6 +11,6 @@ import java.awt.image.VolatileImage;
  */
 public interface ImageEnhancer {
 	
-	public VolatileImage enhanceImage(VolatileImage bitmap, int configuration);
+	public BufferedImage enhanceImage(BufferedImage bitmap, int configuration);
 	public String[] getConfigurationOptions();
 }
