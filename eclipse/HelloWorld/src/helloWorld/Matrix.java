@@ -17,7 +17,7 @@ import java.lang.Math;
  *   getDimensions - get # of rows and columns
  *   reduce - crop to first (mm,nn) elements
  *   crop . reduce with horizontal and vertical offset
- *   expand - expan matrix, fill with zero values
+ *   expand - expand matrix, fill with zero values
  *   toArray - stretch Matrix to array
  *   array2Matrix - transform array to matrix
  *   sum - return sum of all elements
@@ -82,6 +82,13 @@ final public class Matrix {
     	for (int i = 0; i < m; i++)
     		System.arraycopy(x[i], 0, expanded[i], 0, n);
     	return new Matrix(expanded);
+    }
+    
+    public void copy(Matrix B) {
+    	float[][] b = B.getData();
+    	int width = b[0].length;
+    	for (int i = 0; i < b.length; i++)
+    		System.arraycopy(b[i], 0, data[i], 0, width);
     }
 
 	public float[] toArray() {

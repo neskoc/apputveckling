@@ -169,6 +169,15 @@ public class HaarDenoising implements ImageEnhancer {
 	    w4 = apply_haar_filter(w4, level, th_type, w2);
 	    w3 = apply_haar_filter(w3, level, th_type, w2);
 	    w2 = apply_haar_filter(w2, level, th_type, w2);
+
+	    Matrix Iout_forward = Iout_hw;
+	    Matrix w1w2 = w1.concatH(w2);
+	    Matrix w3w4 = w3.concatH(w4);
+	    Matrix w1w2w3w4 = w1w2.concatV(w3w4);
+
+	    Iout_forward.copy(w1w2w3w4);
+	    Matrix Iout_inverse = full_iHaar2D(Iout_forward, level);
+	    
 //		if (action != ACTION_3) {
 //            float maxValue = 0;
 //            for (int i = 0; i < hsvPixels.length; i++) {
