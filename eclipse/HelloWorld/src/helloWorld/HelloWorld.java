@@ -85,6 +85,15 @@ public class HelloWorld {
         float[] array = D.toArray();
 	    Matrix X = Matrix.array2Matrix(array, 4, 4).expand(6,8);
 	    X.show();
+	    array = X.toArray();
+	    X = Matrix.array2Matrix(array, 8, 6);
+        System.out.println("X.length:" + X.getData().length + " : " + X.getData()[0].length);
+        System.out.println();
+
+        System.out.println("copy of D:");
+        Matrix Copied = new Matrix(10,10);
+        Copied.copy(D);
+        Copied.show();
         System.out.println();
 
         System.out.println("Crop Matrix D:");

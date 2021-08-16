@@ -98,8 +98,8 @@ final public class Matrix {
 		return array;
 	}
     
-    public static Matrix array2Matrix(float[] array, int width, int height) {
-    	float[][] toMatrix = new float[width][height];
+    public static Matrix array2Matrix(float[] array, int height, int width) {
+    	float[][] toMatrix = new float[height][width];
     	for (int i = 0; i < height; i++)
     		System.arraycopy(array, i*width, toMatrix[i], 0, width);
     	return new Matrix(toMatrix);

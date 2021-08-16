@@ -22,6 +22,14 @@ public class HaarDenoising implements ImageEnhancer {
 		// calculate log2 for a (integer)
 	    return (int) (Math.log(a) / Math.log(2));
 	}
+	
+	public float[] getVfromHSV(float[][] pixels) {
+		float[] vPixels = new float[pixels.length];
+		for (int i = 0; i < pixels.length; i++) {
+			vPixels[i] = pixels[i][2];
+		}
+		return vPixels;
+	}
 
 	public Matrix Haar2D(Matrix X) {
 		float[][] lr_filter = { { (float) 0.25, (float) 0.25}, { (float) 0.25, (float) 0.25} };
@@ -98,7 +106,7 @@ public class HaarDenoising implements ImageEnhancer {
 
 		for (int i = level; i > 0; i--) {
 	        // dim reduction for 2dhaar transform depending on the transform level
-	        dim_reduction = (int) Math.pow(2, i-1);
+	        dim_reduction = (int) Math.pow(2, i);
 	        Inverse = iHaar2D(Inverse.reduce(dim[0]/dim_reduction, dim[1]/dim_reduction));
 		}
 		return Inverse;
@@ -138,7 +146,6 @@ public class HaarDenoising implements ImageEnhancer {
 		
 		//Convert pixels to brightness values;
 		float[][] hsvPixels = convertToHSV(pixels);
-	    float[] vPixels = getVfromHSV(hsvPixels);
 		
 		progress = 40;
 		
@@ -148,6 +155,7 @@ public class HaarDenoising implements ImageEnhancer {
 		// Here below some manipulations of the image is made as examples.
 		// This should be changed to your image enhancement algorithms.
 
+	    float[] vPixels = getVfromHSV(hsvPixels);
 		int lev_rows = log2(height);
 	    int lev_cols = log2(width);
 	    int mm = (int) Math.pow(2, lev_rows);
@@ -218,14 +226,6 @@ public class HaarDenoising implements ImageEnhancer {
 			Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsvPixels[i]);
 		}
 		return hsvPixels;
-	}
-	
-	public float[] getVfromHSV(float[][] pixels) {
-		float[] vPixels = new float[pixels.length];
-		for (int i = 0; i < pixels.length; i++) {
-			vPixels[i] = pixels[i][2];
-		}
-		return vPixels;
 	}
 
 	public int getProgress() {

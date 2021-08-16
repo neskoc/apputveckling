@@ -69,7 +69,7 @@ public class MainActivity extends FragmentActivity {
 			public void onClick(View v) {
 				Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 				intent.setType("image/*");
-				startActivityForResult(Intent.createChooser(intent, "Zelect image:"), SELECT_IMAGE);
+				startActivityForResult(Intent.createChooser(intent, "Select image:"), SELECT_IMAGE);
 
 			}
 		});

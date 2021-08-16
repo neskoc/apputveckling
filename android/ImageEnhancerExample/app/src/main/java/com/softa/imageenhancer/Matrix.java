@@ -16,6 +16,8 @@ import java.lang.Math;
  * Added methods:
  *   getDimensions - get # of rows and columns
  *   reduce - crop to first (mm,nn) elements
+ *   crop . reduce with horizontal and vertical offset
+ *   expand - expand matrix, fill with zero values
  *   toArray - stretch Matrix to array
  *   array2Matrix - transform array to matrix
  *   sum - return sum of all elements
@@ -64,6 +66,45 @@ final public class Matrix {
         return new Matrix(reduced);
     }
 
+    public Matrix crop(int mm, int nn, int hOffset, int vOffset) {
+        float[][] cropped = new float[mm][nn];
+        float[][] x = this.getData();
+        for (int i = vOffset; i < vOffset + mm; i++) {
+            // System.out.println(i);
+            System.arraycopy(x[i], hOffset, cropped[i-vOffset], 0, nn);
+        }
+        return new Matrix(cropped);
+    }
+
+    public Matrix expand(int mm, int nn) {
+        float[][] expanded = new float[mm][nn];
+        float[][] x = this.getData();
+        for (int i = 0; i < m; i++)
+            System.arraycopy(x[i], 0, expanded[i], 0, n);
+        return new Matrix(expanded);
+    }
+
+    public void copy(Matrix B) {
+        float[][] b = B.getData();
+        int width = b[0].length;
+        for (int i = 0; i < b.length; i++)
+            System.arraycopy(b[i], 0, data[i], 0, width);
+    }
+
+    public float[] toArray() {
+        float[] array = new float[m * n];
+        for(int i = 0; i < m; i++)
+            System.arraycopy(this.data[i], 0, array, (i * n), n);
+        return array;
+    }
+
+    public static Matrix array2Matrix(float[] array, int height, int width) {
+        float[][] toMatrix = new float[height][width];
+        for (int i = 0; i < height; i++)
+            System.arraycopy(array, i*width, toMatrix[i], 0, width);
+        return new Matrix(toMatrix);
+    }
+
     public float[][] getData() {
         return this.data;
     }
@@ -88,20 +129,6 @@ final public class Matrix {
             for (int j = 0; j < n; j++)
                 standardDeviation += Math.pow(this.data[i][j] - mean, 2);
         return (float) Math.sqrt(standardDeviation / size);
-    }
-
-    public float[] toArray() {
-        float[] array = new float[m * n];
-        for(int i = 0; i < m; i++)
-            System.arraycopy(this.data[i], 0, array, (i * n), n);
-        return array;
-    }
-
-    public static Matrix array2Matrix(int[] array, int width, int height) {
-        float[][] toMatrix = new float[width][height];
-        for (int i = 0; i < height; i++)
-            System.arraycopy(array, 0, toMatrix[i], 0, width);
-        return new Matrix(toMatrix);
     }
 
     public float median()
@@ -208,7 +235,7 @@ final public class Matrix {
     public Matrix concatH(Matrix B) {
         Matrix A = this;
         if (B.m != A.m) throw new RuntimeException("Illegal matrix dimensions. Matrix B.m != A.m");
-        float[][] c = new float[A.n][A.m + B.m];
+        float[][] c = new float[A.m][A.n + B.n];
         float[][] a = A.getData();
         float[][] b = B.getData();
         for (int i = 0; i < A.m; i++)

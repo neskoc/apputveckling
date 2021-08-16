@@ -32,50 +32,67 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 		progress = 5;
 
 		Log.d("DEBUG", "pixels length = " + pixels.length);
+
+		progress = 6;
 		
 		//Convert pixels to brightness values;
 		float[][] hsvPixels = convertToHSV(pixels);
-		
 		progress = 40;
 		
 		Log.d("DEBUG", "hsvPixels length = " + hsvPixels.length);
+		progress = 41;
 
 		// Here below some manipulations of the image is made as examples.
 		// This should be changed to your image enhancement algorithms.
 
+		float[] vPixels = getVfromHSV(hsvPixels);
+		progress = 45;
 		int lev_rows = log2(height);
 		int lev_cols = log2(width);
 		int mm = (int) Math.pow(2, lev_rows);
-		int nn = (int) Math.pow(2,lev_cols);
-		int level = 5;
+		int nn = (int) Math.pow(2, lev_cols);
+		int level = action != 0 ? action : 6;
+		String th_type = "hard";
+		int mw = mm / (int) Math.pow(2, level);
+		int nw = nn /  (int) Math.pow(2, level);
 
-		Matrix Iout_hw = full_Haar2D(Matrix.array2Matrix(pixels, width, height), level);
+		Matrix X = Matrix.array2Matrix(vPixels, height, width);
+		Matrix X_copy = X;
+		if (mm > height || nn > width)
+			X = X.expand(mm,nn);
+		progress = 50;
+		Matrix Iout_hw = full_Haar2D(X, level);
+		progress = 60;
 
-		/*
-		if (action != ACTION_3) {
-            float maxValue = 0;
-            for (int i = 0; i < hsvPixels.length; i++) {
-                if (maxValue < hsvPixels[i][action]) maxValue = hsvPixels[i][action];
-            }
-            Log.d("DEBUG", "maxValue of hsvPixels = " + maxValue);
-            progress = 60;
+		Matrix w1 = Iout_hw.reduce(mw, nw);
+		Matrix w2 = Iout_hw.crop(mw, nw, nw, 0);
+		Matrix w3 = Iout_hw.crop(mw, nw, 0, mw);
+		Matrix w4 = Iout_hw.crop(mw, nw, nw, mw);
+		progress = 70;
 
-            for (int i = 0; i < hsvPixels.length; i++) {
-                hsvPixels[i][action] = maxValue - hsvPixels[i][action];
-                pixels[i] = Color.HSVToColor(hsvPixels[i]);
-            }
-        } else {
-            for (int i = 0; i < hsvPixels.length; i++) {
-                hsvPixels[i][1] = 0; // Set color saturation to zero
-                pixels[i] = Color.HSVToColor(hsvPixels[i]);
-            }
-            Log.d("DEBUG", "saturation zeroed");
-        }
-        */
+		w4 = apply_haar_filter(w4, level, th_type, w2);
+		w3 = apply_haar_filter(w3, level, th_type, w2);
+		w2 = apply_haar_filter(w2, level, th_type, w2);
 		progress = 80;
+
+		Matrix w1w2 = w1.concatH(w2);
+		Matrix w3w4 = w3.concatH(w4);
+		Matrix w1w2w3w4 = w1w2.concatV(w3w4);
+
+		Iout_hw.copy(w1w2w3w4);
+		Matrix Iout_inverse = full_iHaar2D(Iout_hw, level);
+		// X.copy(Iout_hw);
+		// Matrix Iout_inverse = full_iHaar2D(X, level);
+		// Matrix C = X.minus(Iout_inverse);
+		progress = 90;
+
+		Matrix Iout_inverse_reduced = Iout_inverse.reduce(height, width);
+		float[] HaarWDT_array = Iout_inverse_reduced.toArray();
+		int[] HaarWDT_pixels = setVinHSV(hsvPixels, HaarWDT_array);
+		progress = 95;
 		Log.d("DEBUG","creating BITMAP,width x height "+width+" "+height);
         Bitmap modifiedImage = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-		modifiedImage.setPixels(pixels, 0, width, 0, 0, width, height);
+		modifiedImage.setPixels(HaarWDT_pixels, 0, width, 0, 0, width, height);
 
 		progress = 100;
 		return modifiedImage;
@@ -116,11 +133,27 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 		return new String[]{ "Action 0", "Action 1", "Action 2", "Action 3"};
 	}
 
-
 	public static int log2(int a)
 	{
 		// calculate log2 for a (integer)
-		return (int) (Math.log(a) / Math.log(2));
+		return (int) Math.ceil(Math.log(a) / Math.log(2));
+	}
+
+	public float[] getVfromHSV(float[][] hsvPixels) {
+		float[] vPixels = new float[hsvPixels.length];
+		for (int i = 0; i < hsvPixels.length; i++) {
+			vPixels[i] = hsvPixels[i][2];
+		}
+		return vPixels;
+	}
+
+	public int[] setVinHSV(float[][] hsvPixels, float[] vPixels) {
+		int[] pixels = new int[vPixels.length];
+		for (int i = 0; i < hsvPixels.length; i++) {
+			hsvPixels[i][2] = vPixels[i];
+			pixels[i] = Color.HSVToColor(hsvPixels[i]);
+		}
+		return pixels;
 	}
 
 	public Matrix Haar2D(Matrix X) {
@@ -134,10 +167,10 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 		Matrix w3 = X.convWithStride(new Matrix(vc_filter));
 		Matrix w4 = X.convWithStride(new Matrix(dc_filter));
 
-		Matrix resultH_up = w1.concatH(w2);
-		Matrix resultH_down = w3.concatH(w4);
+		Matrix w1w2 = w1.concatH(w2);
+		Matrix w3w4 = w3.concatH(w4);
 
-		return resultH_up.concatV(resultH_down);
+		return w1w2.concatV(w3w4);
 	}
 
 	public Matrix full_Haar2D(Matrix X, int level) {
@@ -148,10 +181,10 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 		int[] dim = X.getDimensions();
 		Matrix Forward = X;
 
-		for (int i = 1; i < level; i++) {
+		for (int i = 1; i <= level; i++) {
 			// dim reduction for 2dhaar transform depending on the transform level
 			dim_reduction = (int) Math.pow(2, i-1);
-			Forward = Haar2D(Forward.reduce(dim[0]/dim_reduction, dim[1]/dim_reduction));
+			Forward.copy(Haar2D(Forward.reduce(dim[0]/dim_reduction, dim[1]/dim_reduction)));
 		}
 		return Forward;
 	}
@@ -175,9 +208,9 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 			System.arraycopy(x[mm + i], nn, w4[i], 0, nn);
 		}
 		for (int i = 0 ; i < mm; i++) {
-			int ii= i * 2 - 1;
+			int ii= i * 2;
 			for (int j = 0; j < nn; j++) {
-				int jj = j * 2 - 1;
+				int jj = j * 2;
 				y[ii][jj]     = w1[i][j] + w2[i][j] + w3[i][j] + w4[i][j];
 				y[ii][jj+1]   = w1[i][j] + w2[i][j] - w3[i][j] - w4[i][j];
 				y[ii+1][jj]   = w1[i][j] - w2[i][j] + w3[i][j] - w4[i][j];
@@ -196,10 +229,10 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 		int[] dim = X.getDimensions();
 		Matrix Inverse = X;
 
-		for (int i = level; i > 0; i--) {
+		for (int i = level; i >= 1; i--) {
 			// dim reduction for 2dhaar transform depending on the transform level
-			dim_reduction = (int) Math.pow(2, i-1);
-			Inverse = iHaar2D(Inverse.reduce(dim[0]/dim_reduction, dim[1]/dim_reduction));
+			dim_reduction = (int) Math.pow(2, i - 1);
+			Inverse.copy(iHaar2D(Inverse.reduce(dim[0]/dim_reduction, dim[1]/dim_reduction)));
 		}
 		return Inverse;
 	}
