@@ -139,7 +139,7 @@ final public class Matrix {
         if (size % 2 == 1)
             res = array[((size + 1) / 2) - 1];
         else
-            res = (array[n/2 - 1] + array[n/2]) / 2;
+            res = (array[size/2 - 1] + array[size/2]) / 2;
         return res;
     }
 

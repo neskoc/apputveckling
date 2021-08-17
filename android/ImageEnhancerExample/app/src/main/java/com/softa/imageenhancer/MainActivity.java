@@ -207,7 +207,6 @@ public class MainActivity extends FragmentActivity {
 		ArrayList<ImageEnhancer> enhancers = new ArrayList<ImageEnhancer>();
 
 		enhancers.add(new HaarDWTEnhancer()); // Here below additional enhancers can be added
-		enhancers.add(new TestEnhancer());
 		return enhancers;
 	}
 	
@@ -220,7 +219,7 @@ public class MainActivity extends FragmentActivity {
 					selectedEnhancer.getConfigurationOptions(),
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-							selectedConfiguration = which;
+							selectedConfiguration = which + 1;
 							progressDialog.setProgress(0);
 							progressDialog.show();
 							new ImproveImageTask().execute(theImage);

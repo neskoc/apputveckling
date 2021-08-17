@@ -68,10 +68,26 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 		Matrix w4 = Iout_hw.crop(mw, nw, nw, mw);
 		progress = 70;
 
-		w4 = apply_haar_filter(w4, level, th_type, w2);
-		w3 = apply_haar_filter(w3, level, th_type, w2);
-		w2 = apply_haar_filter(w2, level, th_type, w2);
+		/*
+		* Due to median calculation heavily effected by expanding
+		* image with zeros to fit 2^n size threshold needs to be
+		* calculated on the coefficient corresponding to the image
+		* original size (reduced by level factor)
+		* */
+		int mw_reduced = (int) Math.floor(height / Math.pow(2,level));
+		int nw_reduced = (int) Math.floor(width / Math.pow(2,level));
+		Matrix w4_reduced = w4.reduce(mw_reduced, nw_reduced);
+		Matrix w3_reduced = w3.reduce(mw_reduced, nw_reduced);
+		Matrix w2_reduced = w2.reduce(mw_reduced, nw_reduced);
+
+		w4_reduced = apply_haar_filter(w4_reduced, level, th_type, w4_reduced);
+		w3_reduced = apply_haar_filter(w3_reduced, level, th_type, w4_reduced);
+		w2_reduced = apply_haar_filter(w2_reduced, level, th_type, w4_reduced);
 		progress = 80;
+
+		w4.copy(w4_reduced);
+		w3.copy(w3_reduced);
+		w2.copy(w2_reduced);
 
 		Matrix w1w2 = w1.concatH(w2);
 		Matrix w3w4 = w3.concatH(w4);
@@ -126,12 +142,11 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 		String[] softOptions = new String[2 * max_level];
 		String[] hardOptions = new String[max_level];
 		for (int i = 0; i < max_level; i++) {
-			softOptions[i] = "soft: level " + (i + 1);
-			hardOptions[i] = "hard: level " + (i + 1);
+			softOptions[i] = "soft threshold: level " + (i + 1);
+			hardOptions[i] = "hard threshold: level " + (i + 1);
 		}
 		System.arraycopy(hardOptions, 0, softOptions, max_level, max_level);
 		return softOptions;
-		// return new String[]{ "Action 0", "Action 1", "Action 2", "Action 3"};
 	}
 
 	public static int log2(int a)
@@ -241,11 +256,13 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 	public static float sigthresh(Matrix M, int level, Matrix test_matrix) {
 		int[] dim = M.getDimensions();
 		int length = Math.max(dim[0], dim[1]);
+		final float scaling_factor = (float) 1.2;
 
 		float c = (float) 0.6745;
 		float variance = (float) Math.pow(M.abs().median() / c, 2);
 		float beta = (float) Math.sqrt((float)Math.log(length) / level);
-		return beta * variance / test_matrix.std2(); // T in Matlab
+		float T = scaling_factor * beta * variance / test_matrix.std2();
+		return T;
 	}
 
 	public Matrix apply_haar_filter(Matrix M, int level, String th_type, Matrix HH_matrix) {
