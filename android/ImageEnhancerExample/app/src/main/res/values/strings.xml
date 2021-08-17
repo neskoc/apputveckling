@@ -6,6 +6,6 @@
     <string name="title_activity_main">2D Haar DWT denoising</string>
     <string name="before_image">Before image</string>
     <string name="after_image">After image</string>
-    <string name="select_configuration">Select configuration</string>
+    <string name="select_configuration">Select filter type and level</string>
 
 </resources>

@@ -53,7 +53,7 @@
     <string name="before_image">Before image</string>
     <string name="improve_image_text">Modify image</string>
     <string name="load_button_text">Load new image</string>
-    <string name="select_configuration">Select configuration</string>
+    <string name="select_configuration">Select filter type and level</string>
     <string name="status_bar_notification_info_overflow">999+</string>
     <string name="title_activity_main">2D Haar DWT denoising</string>
     <style name="AppTheme" parent="android:Theme.NoTitleBar.Fullscreen"/>

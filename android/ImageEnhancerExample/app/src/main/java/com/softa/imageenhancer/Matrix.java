@@ -50,8 +50,6 @@ final public class Matrix {
         n = data[0].length;
         this.data = new float[m][n];
         System.arraycopy(data, 0, this.data, 0, m);
-//        for (int i = 0; i < m; i++)
-//        	this.data[i] = data[i];
     }
 
     public int[] getDimensions() {
@@ -224,10 +222,6 @@ final public class Matrix {
         Matrix C = new Matrix(A.m + B.m, A.n);
         if (A.m >= 0) System.arraycopy(A.data, 0, C.data, 0, A.m);
         if (B.m >= 0) System.arraycopy(B.data, 0, C.data, A.m, B.m);
-//        for (int i = 0; i < A.m; i++)
-//            C.data[i] = A.data[i];
-//        for (int i = 0; i < B.m; i++)
-//            C.data[A.m + i] = B.data[i];
         return C;
     }
 

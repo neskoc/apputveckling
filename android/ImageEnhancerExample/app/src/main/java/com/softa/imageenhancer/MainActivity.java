@@ -37,6 +37,7 @@ public class MainActivity extends FragmentActivity {
 	private static ImageEnhancer selectedEnhancer;
 	private static int selectedConfiguration;
 	private static ProgressDialog progressDialog;
+	public static int max_level;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -135,6 +136,9 @@ public class MainActivity extends FragmentActivity {
 					height = activityHeight / 2;
 					width = theImage.getWidth() * height / theImage.getHeight();
 				}
+				int lev_rows = HaarDWTEnhancer.log2(height);
+				int lev_cols = HaarDWTEnhancer.log2(width);
+				max_level = Math.min(lev_rows, lev_cols) - 1;
 				Log.d("DEBUG","creating scaled BITMAP,width x height "+width+" "+height);
 				theImage = Bitmap.createScaledBitmap(theImage, width,
 						height, false);

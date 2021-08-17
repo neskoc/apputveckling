@@ -17,7 +17,7 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 
 	}
 	
-	public Bitmap enhanceImageHSV(Bitmap theImage, int action) {
+	public Bitmap enhanceImageHSV(Bitmap theImage, String th_type, int level) {
 
 		// Set progress
 		progress = 0;
@@ -51,8 +51,6 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 		int lev_cols = log2(width);
 		int mm = (int) Math.pow(2, lev_rows);
 		int nn = (int) Math.pow(2, lev_cols);
-		int level = action != 0 ? action : 6;
-		String th_type = "hard";
 		int mw = mm / (int) Math.pow(2, level);
 		int nw = nn /  (int) Math.pow(2, level);
 
@@ -81,9 +79,6 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 
 		Iout_hw.copy(w1w2w3w4);
 		Matrix Iout_inverse = full_iHaar2D(Iout_hw, level);
-		// X.copy(Iout_hw);
-		// Matrix Iout_inverse = full_iHaar2D(X, level);
-		// Matrix C = X.minus(Iout_inverse);
 		progress = 90;
 
 		Matrix Iout_inverse_reduced = Iout_inverse.reduce(height, width);
@@ -114,23 +109,29 @@ public class HaarDWTEnhancer implements ImageEnhancer {
 
 	@Override
 	public Bitmap enhanceImage(Bitmap bitmap, int configuration) {
-		switch (configuration) {
-		case ACTION_0:
-			return enhanceImageHSV(bitmap, 0);
-		case ACTION_1:
-			return enhanceImageHSV(bitmap, 1);
-		case ACTION_2:
-			return enhanceImageHSV(bitmap, 2);
-        case ACTION_3:
-            return enhanceImageHSV(bitmap, 3);
-		default:
-			return enhanceImageHSV(bitmap, 0);
+		int level;
+		String th_type = "soft";
+		if (configuration <= MainActivity.max_level)
+			level = configuration;
+		else {
+			level = configuration - MainActivity.max_level;
+			th_type = "hard";
 		}
+		return enhanceImageHSV(bitmap, th_type, level);
 	}
 
 	@Override
 	public String[] getConfigurationOptions() {
-		return new String[]{ "Action 0", "Action 1", "Action 2", "Action 3"};
+		int max_level = MainActivity.max_level;
+		String[] softOptions = new String[2 * max_level];
+		String[] hardOptions = new String[max_level];
+		for (int i = 0; i < max_level; i++) {
+			softOptions[i] = "soft: level " + (i + 1);
+			hardOptions[i] = "hard: level " + (i + 1);
+		}
+		System.arraycopy(hardOptions, 0, softOptions, max_level, max_level);
+		return softOptions;
+		// return new String[]{ "Action 0", "Action 1", "Action 2", "Action 3"};
 	}
 
 	public static int log2(int a)
