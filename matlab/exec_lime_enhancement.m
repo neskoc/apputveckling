@@ -17,21 +17,21 @@ optimized_params = [
     0.01,  1.165
     ];
 
-row = 1; % max value = 9
+row = 2; % max value = 9
 params = optimized_params(row, 1:2);
 mu = params(1);
 rho = params(2);
 iter = 30; % number of iterations for lime solver (default 50)
 
-level = 3; % decides the depth of the haar transform
+level = 5; % decides the depth of the haar transform
 th_type = "soft"; % soft or hard threashold policy for filtering
 
 
 % orig_img = imread('spine.tif');
-orig_img = imread('building.bmp');
+% orig_img = imread('building.bmp');
 % orig_img = imread('testbild.jpg');
 % orig_img = imread('testbildcolor.jpg');
-% orig_img = imread('cars.bmp');
+orig_img = imread('cars.bmp');
 % orig_img = imread('land.bmp');
 % orig_img = imread('GreenRoom33.jpg');
 % orig_img = imread('lamp.bmp');

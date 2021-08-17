@@ -154,15 +154,12 @@ final public class Matrix {
     public Matrix apply_threshold(float threshold, String th_type) {
         float[][] absData = this.abs().getData();
         for (int i = 0; i < m; i++)
-            for (int j = 0; j < n; j++)
-                if (absData[i][j] > threshold) {
-                    if (th_type.equals("soft")) {
-                        this.data[i][j] = this.data[i][j] - threshold * Math.signum(this.data[i][j]);
-                    }
-                    else {
+            for (int j = 0; j < n; j++) {
+                if (absData[i][j] < threshold)
                         this.data[i][j] = 0;
-                    }
-                }
+                else if (th_type.equals("soft"))
+                    this.data[i][j] = this.data[i][j] - threshold * Math.signum(this.data[i][j]);
+            }
         return this;
     }
 

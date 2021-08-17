@@ -5,7 +5,7 @@ function [Res] = apply_haar_filter(M, level, th_type, HH_matrix)
     if th_type == "soft"
         M(abs(M) >= th) = M(abs(M) >= th) - sign(M(abs(M) >= th))*th;
     else
-        M(abs(M) >= th) = 0;
+        M(abs(M) < th) = 0;
     end
     Res = M;
 end

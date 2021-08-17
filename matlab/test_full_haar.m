@@ -10,7 +10,7 @@ addpath('./images');
 orig_img = imread('lamp.bmp');
 % orig_img = imread('moon.bmp');
 
-level = 5;
+level = 6;
 th_type = "soft"; % soft or hard threashold policy for filtering
 
 [m, n, c] = size(orig_img);

@@ -1,11 +1,3 @@
-com/softa/imageenhancer/HaarDWTEnhancer.java
- com.softa.imageenhancer.HaarDWTEnhancer
-com/softa/imageenhancer/ImageEnhancer.java
- com.softa.imageenhancer.ImageEnhancer
-com/softa/imageenhancer/BuildConfig.java
- com.softa.imageenhancer.BuildConfig
-com/softa/imageenhancer/TestEnhancer.java
- com.softa.imageenhancer.TestEnhancer
 com/softa/imageenhancer/MainActivity.java
  com.softa.imageenhancer.MainActivity
  com.softa.imageenhancer.MainActivity$1
@@ -16,5 +8,13 @@ com/softa/imageenhancer/MainActivity.java
  com.softa.imageenhancer.MainActivity$ConfigurationDialog$1
  com.softa.imageenhancer.MainActivity$ImproveImageTask
  com.softa.imageenhancer.MainActivity$ImproveImageTask$1
+com/softa/imageenhancer/ImageEnhancer.java
+ com.softa.imageenhancer.ImageEnhancer
+com/softa/imageenhancer/BuildConfig.java
+ com.softa.imageenhancer.BuildConfig
+com/softa/imageenhancer/TestEnhancer.java
+ com.softa.imageenhancer.TestEnhancer
+com/softa/imageenhancer/HaarDWTEnhancer.java
+ com.softa.imageenhancer.HaarDWTEnhancer
 com/softa/imageenhancer/Matrix.java
  com.softa.imageenhancer.Matrix
