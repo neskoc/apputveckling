@@ -17,7 +17,7 @@ optimized_params = [
     0.01,  1.165
     ];
 
-row = 2; % max value = 9
+row = 5; % max value = 9
 params = optimized_params(row, 1:2);
 mu = params(1);
 rho = params(2);
@@ -31,11 +31,11 @@ th_type = "soft"; % soft or hard threashold policy for filtering
 % orig_img = imread('building.bmp');
 % orig_img = imread('testbild.jpg');
 % orig_img = imread('testbildcolor.jpg');
-orig_img = imread('cars.bmp');
+% orig_img = imread('cars.bmp');
 % orig_img = imread('land.bmp');
 % orig_img = imread('GreenRoom33.jpg');
 % orig_img = imread('lamp.bmp');
-% orig_img = imread('moon.bmp');
+orig_img = imread('moon.bmp');
 [Ti, Tout, enh_img, Inr] = exec_lime_main_module(orig_img, mu, rho, iter, level, th_type);
  
 disp('Cumulative difference:');

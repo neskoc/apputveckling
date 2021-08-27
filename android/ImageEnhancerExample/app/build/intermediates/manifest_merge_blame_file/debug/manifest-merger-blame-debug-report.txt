@@ -17,7 +17,7 @@
 13    <application
 13-->/home/nesko/Dropbox/Db_dbwebb-kurser/apputveckling/android/ImageEnhancerExample/app/src/main/AndroidManifest.xml:7:5-20:19
 14        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-14-->[androidx.core:core:1.0.0] /home/nesko/.gradle/caches/transforms-3/ea36836c97c1c141353f7acdd87e0be6/transformed/core-1.0.0/AndroidManifest.xml:22:18-86
+14-->[androidx.core:core:1.0.0] /home/nesko/.gradle/caches/transforms-3/05c42641b763ec1661455ca235319d86/transformed/core-1.0.0/AndroidManifest.xml:22:18-86
 15        android:debuggable="true"
 16        android:icon="@drawable/ic_launcher"
 16-->/home/nesko/Dropbox/Db_dbwebb-kurser/apputveckling/android/ImageEnhancerExample/app/src/main/AndroidManifest.xml:8:9-45
