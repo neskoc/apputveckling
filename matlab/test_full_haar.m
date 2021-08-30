@@ -25,7 +25,7 @@ if c == 3
     % normalised to be between 0 and 1.
 
     Vbf_norm = Ihsv(:, :, 3);
-    Vbf_norm_w_noise = imnoise(Vbf_norm, "gaussian", 0, 0.003);
+    Vbf_norm_w_noise = imnoise(Vbf_norm, "gaussian", 0.01, 0.01);
     X = round(Vbf_norm_w_noise * 255);
     Ihsv_w_noise = Ihsv;
     Ihsv_w_noise(:, :, 3) = Vbf_norm_w_noise;
